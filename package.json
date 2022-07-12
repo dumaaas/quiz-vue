@@ -1,10 +1,9 @@
 {
-  "name": "quiz",
-  "description": "Lemis football quiz",
+  "name": "Vue Quiz",
+  "description": "Vue Quiz",
   "version": "1.0.0",
-  "author": "BojanVojinovic <bojanv56@gmail.com>",
+  "author": "Marko Dumnic <markodumnic8@gmail.com>",
   "license": "MIT",
-  "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
