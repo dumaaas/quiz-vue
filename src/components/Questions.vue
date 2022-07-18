@@ -12,7 +12,7 @@
       <h2>{{ data[activeQuestion].question }}</h2>
       <p
         class="answers"
-        :style="{ cursor: disableQuestion ? 'not-allowed' : 'pointer' }"
+        :style="{ cursor: disableQuestion ? 'not-allowed' : 'pointer', pointerEvents: disableQuestion ? 'none' : 'auto' }"
         v-for="(answer, index) in data[activeQuestion].answers"
         :key="answer"
         @click="checkAnswer(index, answer, $event)"
@@ -20,7 +20,7 @@
         {{ answer }}
       </p>
 
-      <button class="nextBtn" @click="nextQuestion()">Sledece pitanje</button>
+      <button :class="{disabled: !disableQuestion ? 'disabled' : ''}" :style="{pointerEvents: !disableQuestion ? 'none' : 'auto' }" class="nextBtn" @click="nextQuestion()">Sledece pitanje</button>
     </div>
     <div v-else>
       <p>Thanks for your game!</p>
@@ -176,6 +176,10 @@ export default {
   font-weight: 500;
   transition: all 0.3s ease-out;
   cursor: pointer;
+  &.disabled {
+    background: rgba(66, 211, 146, 0.3);
+    color: #42d392;
+  }
   &:hover {
     background: transparent;
     color: #42d392;
