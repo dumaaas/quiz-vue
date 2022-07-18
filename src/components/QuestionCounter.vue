@@ -11,18 +11,6 @@ export default {
     currentQuestion: Number,
     questionLength: Number
   },
-  components: {},
-
-  data() {
-    return {
-     
-    };
-  },
-  mounted() {
-  },
-  methods: {
-    
-  }
 };
 </script>
 

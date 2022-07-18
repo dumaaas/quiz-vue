@@ -12,7 +12,10 @@
       <h2>{{ data[activeQuestion].question }}</h2>
       <p
         class="answers"
-        :style="{ cursor: disableQuestion ? 'not-allowed' : 'pointer', pointerEvents: disableQuestion ? 'none' : 'auto' }"
+        :style="{
+          cursor: disableQuestion ? 'not-allowed' : 'pointer',
+          pointerEvents: disableQuestion ? 'none' : 'auto',
+        }"
         v-for="(answer, index) in data[activeQuestion].answers"
         :key="answer"
         @click="checkAnswer(index, answer, $event)"
@@ -20,7 +23,14 @@
         {{ answer }}
       </p>
 
-      <button :class="{disabled: !disableQuestion ? 'disabled' : ''}" :style="{pointerEvents: !disableQuestion ? 'none' : 'auto' }" class="nextBtn" @click="nextQuestion()">Sledece pitanje</button>
+      <button
+        :class="{ disabled: !disableQuestion ? 'disabled' : '' }"
+        :style="{ pointerEvents: !disableQuestion ? 'none' : 'auto' }"
+        class="nextBtn"
+        @click="nextQuestion()"
+      >
+        Sledece pitanje
+      </button>
     </div>
     <div v-else>
       <p>Thanks for your game!</p>
@@ -63,22 +73,24 @@ export default {
   mounted() {
     this.activeQuestion = this.randomQuestion();
     this.answeredQuestion.push(this.activeQuestion);
+    this.timerCounting();
   },
   watch: {
     timer: {
       handler(value) {
-        if (value > 0) {
-          setTimeout(() => {
-            this.timer--;
-          }, 1000);
-        } else {
+        if (value <= 0) {
           this.isQuizActive = false;
         }
       },
-      immediate: true, // This ensures the watcher is triggered upon creation
+      immediate: true, 
     },
   },
   methods: {
+    timerCounting() {
+      setInterval(() => {
+        this.timer--;
+      }, 1000);
+    },
     msgForWrong() {
       var msg = "";
       switch (this.correctAnswers) {
