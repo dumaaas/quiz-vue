@@ -131,9 +131,9 @@ export default {
 .addQuestion-modal {
   position: absolute;
   z-index: 1000;
-  transform: translate(50%, -30%);
+  transform: translate(50%, -50%);
   top: 50%;
-  left: 0%;
+  left: 27%;
   max-width: 400px;
   width: 400px;
   min-height: 400px;
@@ -297,6 +297,84 @@ export default {
       background: transparent;
       color: #42d392;
       transition: all 0.3s ease-in;
+    }
+  }
+}
+
+.dayMode {
+  .addQuestion-wrapper {
+    button {
+      background: #1a1a1a;
+      border: 1px solid #1a1a1a;
+      color: #42d392;
+      &:hover {
+        color: #1a1a1a;
+        background: transparent;
+      }
+    }
+  }
+
+  .addQuestion-modal {
+    border: 1px solid #42d392;
+    background: #1a1a1a;
+    .newQuestionBtn {
+      button {
+        background: #42d392;
+        border: 1px solid #1a1a1a;
+        color: #1a1a1a;
+        &:hover {
+          border: 1px solid #42d392;
+          background: #1a1a1a;
+          color: #42d392;
+        }
+      }
+    }
+    &__footer {
+      border-top: 1px solid #42d392;
+      button {
+        background: #42d392;
+        border: 1px solid #42d392;
+        color: #1a1a1a !important;
+        &:hover {
+          background: #1a1a1a;
+          color: #42d392 !important;
+        }
+      }
+    }
+    &__body {
+
+      .form-input {
+        &__flex {
+          span {
+            background: #42d392;
+            border: 1px solid #1a1a1a;
+            color: #1a1a1a;
+        
+            &:hover {
+              border: 1px solid #42d392;
+              background: #1a1a1a;
+              color: #42d392;
+            }
+          }
+        }
+        input {
+          background: #1a1a1a;
+          border: 1px solid #42d392;
+          color: #42d392
+        }
+        label {
+          color: #42d392;
+        }
+      }
+    }
+    &__header {
+      color: #42d392;
+      border-bottom: 1px solid #42d392;
+      span {
+        &:hover {
+          color: rgba(66, 211, 146, 0.4);
+        }
+      }
     }
   }
 }

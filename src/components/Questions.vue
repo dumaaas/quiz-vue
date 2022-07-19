@@ -24,7 +24,7 @@
       </p>
 
       <button
-        :class="{ disabled: !disableQuestion ? 'disabled' : '' }"
+        :class="{ disabled: !disableQuestion }"
         :style="{ pointerEvents: !disableQuestion ? 'none' : 'auto' }"
         class="nextBtn"
         @click="nextQuestion()"
@@ -82,7 +82,7 @@ export default {
           this.isQuizActive = false;
         }
       },
-      immediate: true, 
+      immediate: true,
     },
   },
   methods: {
@@ -196,6 +196,44 @@ export default {
     background: transparent;
     color: #42d392;
     transition: all 0.3s ease-in;
+  }
+}
+
+.dayMode {
+  .answers {
+    border: 1px solid #1a1a1a;
+
+    &:hover {
+      box-shadow: -20px -20px 30px -25px #42d392, 20px 20px 30px -25px #1a1a1a,
+        -7px -7px 10px -5px #42d392, 7px 7px 10px -5px #1a1a1a,
+        0 0 13px 4px rgba(255, 255, 255, 0.3),
+        0 55px 35px -20px rgba(0, 0, 0, 0.5);
+    }
+
+    &.correct {
+      background: #1a1a1a;
+      border: 1px solid #42d392;
+      color: #42d392;
+    }
+    &.wrong {
+      background: #ca0b00;
+      border: 1px solid #1a1a1a;
+      color: #1a1a1a;
+      transition: all 0.3s ease-in;
+    }
+  }
+  .nextBtn {
+    background: #1a1a1a;
+    border: 1px solid #1a1a1a;
+    color: #42d392;
+    &.disabled {
+      background: rgba(26, 26, 26, 0.3);
+      color: #1a1a1a;
+    }
+    &:hover {
+      background: transparent;
+      color: #1a1a1a;
+    }
   }
 }
 
