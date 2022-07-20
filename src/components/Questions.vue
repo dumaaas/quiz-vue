@@ -1,10 +1,19 @@
 <template>
   <div>
-    <div v-if="isQuizActive">
+    <div v-if="!isQuizActive && newPlayer" class="newPlayer">
+      <input
+        placeholder="Enter username"
+        type="text"
+        v-model="newPlayerUsername"
+      />
+      <p v-if="usernameValidation">{{ usernameValidation }}</p>
+      <button @click="startQuiz()" class="nextBtn">Start quiz</button>
+    </div>
+    <div v-else-if="isQuizActive && !newPlayer">
       <div class="quiz-header">
         <QuestionCounter
           :currentQuestion="currentQuestion"
-          :questionLength="data.length"
+          :maxQuestionLength="4"
         />
         <Timer :timer="timer" />
       </div>
@@ -33,13 +42,38 @@
       </button>
     </div>
     <div v-else>
-      <p>Thanks for your game!</p>
-      <p>Correct answers: {{ correctAnswers }}</p>
-      <p>Wrong answers: {{ wrongAnswers }}</p>
-      <p>
-        {{ this.msgForWrong() }}
-      </p>
-      <button @click="anotherGame()" class="nextBtn">New game</button>
+      <p class="game-msg">{{ this.msgForWrong() }}</p>
+      <div class="results-block">
+        <table>
+          <thead>
+            <tr>
+              <th>Correct</th>
+              <th>Wrong</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                {{ correctAnswers }}
+              </td>
+              <td>
+                {{ wrongAnswers }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="button-footer">
+        <button class="nextBtn" @click="$emit('checkShowHighscore', true)">
+          Show highscore
+        </button>
+        <button @click="anotherGame(true, false)" class="nextBtn">
+          New game
+        </button>
+        <button class="nextBtn" @click="anotherGame(false, true)">
+          Change username
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -47,6 +81,7 @@
 <script>
 import QuestionCounter from "./QuestionCounter.vue";
 import Timer from "./Timer.vue";
+import highscore from "./../json/highscore.json";
 
 export default {
   name: "Questions",
@@ -60,7 +95,8 @@ export default {
 
   data() {
     return {
-      isQuizActive: true,
+      isQuizActive: false,
+      newPlayer: true,
       currentQuestion: 1,
       activeQuestion: 0,
       answeredQuestion: [],
@@ -68,24 +104,59 @@ export default {
       correctAnswers: 0,
       wrongAnswers: 0,
       timer: 60,
+      newPlayerUsername: "",
+      highscore: highscore,
+      usernameValidation: "",
     };
-  },
-  mounted() {
-    this.activeQuestion = this.randomQuestion();
-    this.answeredQuestion.push(this.activeQuestion);
-    this.timerCounting();
   },
   watch: {
     timer: {
       handler(value) {
         if (value <= 0) {
           this.isQuizActive = false;
+          this.$emit("checkQuizActive", this.isQuizActive);
+          this.$emit("checkNewPlayer", this.newPlayer);
         }
       },
       immediate: true,
     },
   },
+  watch: {
+    newPlayerUsername() {
+      this.usernameValidation = "";
+    },
+  },
   methods: {
+    startQuiz() {
+      if (!this.newPlayerUsername) {
+        this.usernameValidation = "Username can not be empty";
+        return;
+      }
+      if (this.checkIfUsernameExist()) {
+        this.isQuizActive = true;
+        this.newPlayer = false;
+        this.$emit("checkQuizActive", this.isQuizActive);
+        this.$emit("checkNewPlayer", this.newPlayer);
+        this.$emit("checkNewPlayerUsername", this.newPlayerUsername);
+        if (!this.answeredQuestion.length) {
+          this.activeQuestion = this.randomQuestion();
+          this.answeredQuestion.push(this.activeQuestion);
+        }
+        this.timerCounting();
+      } else {
+        this.usernameValidation =
+          "This username already exist! Please try another one.";
+      }
+    },
+    checkIfUsernameExist() {
+      let tryFind = this.highscore.find(
+        (username) => username.name === this.newPlayerUsername
+      );
+      if (tryFind) {
+        return false;
+      }
+      return true;
+    },
     timerCounting() {
       setInterval(() => {
         this.timer--;
@@ -117,8 +188,7 @@ export default {
       var questionIndex = Math.floor(Math.random() * maxIndex);
       return questionIndex;
     },
-    anotherGame() {
-      this.isQuizActive = true;
+    anotherGame(shouldQuizBeActive, shouldNewPlayer) {
       this.answeredQuestion = [];
       this.activeQuestion = 0;
       this.correctAnswers = 0;
@@ -128,9 +198,13 @@ export default {
       this.disableQuestion = false;
       this.activeQuestion = this.randomQuestion();
       this.answeredQuestion.push(this.activeQuestion);
+      this.isQuizActive = shouldQuizBeActive;
+      this.$emit("checkQuizActive", this.isQuizActive);
+      this.newPlayer = shouldNewPlayer;
+      this.$emit("checkNewPlayer", this.newPlayer);
     },
     nextQuestion() {
-      if (this.answeredQuestion.length != this.data.length) {
+      if (this.answeredQuestion.length != 4) {
         this.answeredQuestion.push(this.activeQuestion);
         if (this.activeQuestion == this.data.length - 1) {
           this.activeQuestion = 0;
@@ -147,7 +221,29 @@ export default {
         this.currentQuestion++;
         this.disableQuestion = false;
       } else {
+        // add user to highscore
+        let newPlayerObj = {
+          name: this.newPlayerUsername,
+          correct: this.correctAnswers,
+          wrong: this.wrongAnswers,
+        };
+
+        var doesPlayerExist = this.highscore.findIndex(
+          (player) => player.name == newPlayerObj.name
+        );
+
+        if (doesPlayerExist == -1) {
+          this.highscore.push(newPlayerObj);
+        } else if (
+          this.highscore[doesPlayerExist].correct < newPlayerObj.correct
+        ) {
+          this.highscore[doesPlayerExist] = newPlayerObj;
+        }
+
+        // set quiz state unactive
         this.isQuizActive = false;
+        this.$emit("checkQuizActive", this.isQuizActive);
+        this.$emit("checkNewPlayerUsername", this.newPlayerUsername);
       }
     },
     checkAnswer(index, answer, event) {
@@ -234,6 +330,85 @@ export default {
       background: transparent;
       color: #1a1a1a;
     }
+  }
+  .game-msg {
+    background: #1a1a1a;
+    color: #42d392;
+    border: 1px solid #1a1a1a;
+  }
+
+  .results-block {
+    background: #1a1a1a;
+    color: #42d392;
+    border: 1px solid #1a1a1a;
+    table {
+      th {
+        border: 1px solid #42d392;
+      }
+      td {
+        border: 1px solid #42d392;
+      }
+    }
+  }
+}
+
+.game-msg {
+  padding: 16px;
+  background: #42d392;
+  color: #1a1a1a;
+  border: 1px solid #42d392;
+  border-radius: 25px 25px 0 0;
+  font-weight: 600;
+}
+
+.results-block {
+  padding: 16px;
+  background: #42d392;
+  color: #1a1a1a;
+  border: 1px solid #42d392;
+  border-radius: 0 0 25px 25px;
+  table {
+    margin: 16px;
+    min-width: 310px;
+    border-collapse: collapse;
+
+    th {
+      border: 1px solid #1a1a1a;
+      padding: 8px;
+      font-weight: 600;
+    }
+    td {
+      border: 1px solid #1a1a1a;
+      padding: 8px;
+    }
+  }
+}
+
+.newPlayer {
+  display: flex;
+
+  flex-direction: column;
+  input {
+    height: 20px;
+    background: #42d392;
+    border: 1px solid #1a1a1a;
+    padding: 14px;
+    border-radius: 10px 0 10px 0;
+    &::placeholder {
+      color: #1a1a1a;
+      opacity: 1;
+    }
+    &:focus {
+      outline: none;
+    }
+  }
+  p {
+    margin-top: 4px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    color: #ca0b00;
   }
 }
 

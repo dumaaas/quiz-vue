@@ -1,10 +1,11 @@
 <template>
   <div id="app" :class="{ dayMode: !dayNight }">
-    <h1>{{ quizTitle }}</h1>
+    <h1>{{ checkTitle() }}</h1>
     <div class="quiz">
-      <Questions :data="data" />
+      <Questions :data="data" @checkQuizActive="checkQuizActive" @checkShowHighscore="checkShowHighscore" @checkNewPlayer="checkNewPlayer" @checkNewPlayerUsername="checkNewPlayerUsername"/>
       <AddQuestion @addQuestion="addQuestionToData" />
       <DayNightToggler @dayNightToggler="dayNightToggler" />
+      <HighScoreTable :highscore="highscore" :showHighscore="showHighscore" @checkShowHighscore="checkShowHighscore"/>
     </div>
   </div>
 </template>
@@ -12,9 +13,10 @@
 <script>
 import Questions from "./components/Questions.vue";
 import AddQuestion from "./components/AddQuestion.vue";
-// import quizData from "./json/quizData.json";
+import highscore from "./json/highscore.json";
 import quizData from "./helpers/quizData.js";
 import DayNightToggler from "./components/DayNightToggler.vue";
+import HighScoreTable from "./components/HighScoreTable.vue";
 
 export default {
   name: "app",
@@ -22,21 +24,51 @@ export default {
     Questions,
     AddQuestion,
     DayNightToggler,
+    HighScoreTable
   },
   data() {
     return {
-      quizTitle: "Vue Quiz",
       data: quizData,
+      highscore: highscore,
       dayNight: true,
+      isNewPlayer: true,
+      isQuizActive: true,
+      showHighscore: false,
+      newPlayerUsername: '',
     };
   },
   methods: {
+    checkTitle() {
+      if(this.isNewPlayer) {
+        return 'New player';
+      }
+      if(this.isQuizActive) {
+        return 'Vue Quiz';
+      }
+      return 'Result';
+    },
     addQuestionToData(value) {
       this.data.push(value);
     },
     dayNightToggler(value) {
       this.dayNight = value;
     },
+    checkQuizActive(value) {
+      this.isQuizActive = value;
+    },
+    checkNewPlayer(value) {
+      this.isNewPlayer = value;
+    },
+    checkShowHighscore(value) {
+      this.showHighscore = value;
+      // when showing highscore, sort results
+      if(value) {
+        this.highscore.sort((a, b) => b.correct - a.correct)
+      }
+    },
+    checkNewPlayerUsername(value) {
+      this.newPlayerUsername = value;
+    }
   },
 };
 </script>
@@ -48,7 +80,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #42d392;
-  position: relative;
   margin: 0 auto;
   display: flex;
   align-items: center;

@@ -131,9 +131,9 @@ export default {
 .addQuestion-modal {
   position: absolute;
   z-index: 1000;
-  transform: translate(50%, -50%);
+  transform: translate(-50%, -50%);
   top: 50%;
-  left: 27%;
+  left: 50%;
   max-width: 400px;
   width: 400px;
   min-height: 400px;

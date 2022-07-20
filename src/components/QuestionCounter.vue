@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>{{currentQuestion}} / {{questionLength}}</p>
+    <p>{{currentQuestion}} / {{maxQuestionLength}}</p>
   </div>
 </template>
 
@@ -9,7 +9,7 @@ export default {
   name: "QuestionCounter",
   props: {
     currentQuestion: Number,
-    questionLength: Number
+    maxQuestionLength: Number
   },
 };
 </script>
