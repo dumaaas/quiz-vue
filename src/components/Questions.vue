@@ -104,6 +104,7 @@ export default {
       correctAnswers: 0,
       wrongAnswers: 0,
       timer: 60,
+      timeUsed: 0,
       newPlayerUsername: "",
       highscore: highscore,
       usernameValidation: "",
@@ -120,12 +121,11 @@ export default {
       },
       immediate: true,
     },
-  },
-  watch: {
     newPlayerUsername() {
       this.usernameValidation = "";
     },
   },
+
   methods: {
     startQuiz() {
       if (!this.newPlayerUsername) {
@@ -142,7 +142,7 @@ export default {
           this.activeQuestion = this.randomQuestion();
           this.answeredQuestion.push(this.activeQuestion);
         }
-        this.timerCounting();
+        setInterval(() => this.timerCounting(), 1000);
       } else {
         this.usernameValidation =
           "This username already exist! Please try another one.";
@@ -158,15 +158,14 @@ export default {
       return true;
     },
     timerCounting() {
-      setInterval(() => {
-        this.timer--;
-      }, 1000);
+      this.timer--;
+      this.timeUsed++;
     },
     msgForWrong() {
       var msg = "";
       switch (this.correctAnswers) {
         case 0:
-          msg = "Oh, no luck :(";
+          msg = "Oh, you need to learn more! :(";
           break;
         case 1:
           msg = "Keep going!";
@@ -194,7 +193,9 @@ export default {
       this.correctAnswers = 0;
       this.wrongAnswers = 0;
       this.currentQuestion = 1;
+      clearInterval(this.timerCounting());
       this.timer = 60;
+      this.timeUsed = 0;
       this.disableQuestion = false;
       this.activeQuestion = this.randomQuestion();
       this.answeredQuestion.push(this.activeQuestion);
@@ -226,6 +227,7 @@ export default {
           name: this.newPlayerUsername,
           correct: this.correctAnswers,
           wrong: this.wrongAnswers,
+          time: this.timeUsed,
         };
 
         var doesPlayerExist = this.highscore.findIndex(
@@ -235,7 +237,9 @@ export default {
         if (doesPlayerExist == -1) {
           this.highscore.push(newPlayerObj);
         } else if (
-          this.highscore[doesPlayerExist].correct < newPlayerObj.correct
+          this.highscore[doesPlayerExist].correct <= newPlayerObj.correct ||
+          (this.highscore[doesPlayerExist].correct <= newPlayerObj.correct &&
+            this.highscore[doesPlayerExist].time >= newPlayerObj.time)
         ) {
           this.highscore[doesPlayerExist] = newPlayerObj;
         }

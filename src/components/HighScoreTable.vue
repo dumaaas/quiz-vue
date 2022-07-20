@@ -11,6 +11,7 @@
           <th>Player name</th>
           <th>Correct answers</th>
           <th>Wrong answers</th>
+          <th>Time</th>
         </tr>
       </thead>
       <tbody>
@@ -26,6 +27,9 @@
           </td>
           <td>
             {{ u.wrong }}
+          </td>
+          <td>
+            {{ u.time }} s
           </td>
         </tr>
       </tbody>

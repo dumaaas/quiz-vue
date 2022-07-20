@@ -2,21 +2,25 @@
     {
         "name": "dumaaas",
         "correct": 4,
-        "wrong": 0
+        "wrong": 0,
+        "time": 20
     },
     {
         "name": "tomaa",
         "correct": 2,
-        "wrong": 2
+        "wrong": 2,
+        "time": 24
     },
     {
         "name": "cKem1",
         "correct": 3,
-        "wrong": 1
+        "wrong": 1,
+        "time": 25
     },
     {
         "name": "pejkee",
         "correct": 0,
-        "wrong": 4
+        "wrong": 4,
+        "time": 11
     }
 ]
