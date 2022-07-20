@@ -2,7 +2,7 @@
   <div class="highscore" v-if="showHighscore">
     <div class="highscore__header">
       <h3>Highscore</h3>
-      <span @click="$emit('checkShowHighscore', false)">X</span>
+      <span @click="$emit('checkShowHighscore', false); $emit('checkShouldWrapper', false)">X</span>
     </div>
     <table>
       <thead>

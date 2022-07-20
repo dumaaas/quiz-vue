@@ -64,7 +64,13 @@
         </table>
       </div>
       <div class="button-footer">
-        <button class="nextBtn" @click="$emit('checkShowHighscore', true)">
+        <button
+          class="nextBtn"
+          @click="
+            $emit('checkShowHighscore', true);
+            $emit('checkShouldWrapper', true);
+          "
+        >
           Show highscore
         </button>
         <button @click="anotherGame(true, false)" class="nextBtn">
@@ -172,19 +178,19 @@ export default {
       var msg = "";
       switch (this.correctAnswers) {
         case 0:
-          msg = this.newPlayerUsername+", oh, you need to learn more! :(";
+          msg = this.newPlayerUsername + ", oh, you need to learn more! :(";
           break;
         case 1:
-          msg = this.newPlayerUsername+", keep going!";
+          msg = this.newPlayerUsername + ", keep going!";
           break;
         case 2:
-          msg = this.newPlayerUsername+", you are almost there!";
+          msg = this.newPlayerUsername + ", you are almost there!";
           break;
         case 3:
-          msg = this.newPlayerUsername+", great job, man!";
+          msg = this.newPlayerUsername + ", great job, man!";
           break;
         default:
-          msg = this.newPlayerUsername+", you are Vue.js master!";
+          msg = this.newPlayerUsername + ", you are Vue.js master!";
           break;
       }
       return msg;
@@ -382,7 +388,8 @@ export default {
   border: 1px solid #42d392;
   border-radius: 0 0 25px 25px;
   table {
-    margin: 16px;
+    margin: 0 auto;
+    padding: 16px;
     min-width: 310px;
     border-collapse: collapse;
 

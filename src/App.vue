@@ -1,5 +1,8 @@
 <template>
   <div id="app" :class="{ dayMode: !dayNight }">
+    <div class="black-wrapper" v-if="shouldWrapper">
+
+    </div>
     <h1>{{ checkTitle() }}</h1>
     <select
       class="classic"
@@ -22,13 +25,15 @@
         @checkNewPlayer="checkNewPlayer"
         @checkNewPlayerUsername="checkNewPlayerUsername"
         @checkQuizValidation="checkQuizValidation"
+        @checkShouldWrapper="checkShouldWrapper"
       />
-      <AddQuestion @addQuestion="addQuestionToData" />
+      <AddQuestion @addQuestion="addQuestionToData" @checkShouldWrapper="checkShouldWrapper"/>
       <DayNightToggler @dayNightToggler="dayNightToggler" />
       <HighScoreTable
         :highscore="highscore"
         :showHighscore="showHighscore"
-        @checkShowHighscore="checkShowHighscore"
+        @checkShowHighscore="checkShowHighscore" :wrapper="shouldWrapper"
+        @checkShouldWrapper="checkShouldWrapper"
       />
     </div>
   </div>
@@ -63,6 +68,7 @@ export default {
       isQuizActive: true,
       showHighscore: false,
       newPlayerUsername: "",
+      shouldWrapper: false,
       quizes: [
         { title: vueQuizData.title, data: vueQuizData.data },
         { title: sportQuizData.title, data: sportQuizData.data },
@@ -115,6 +121,9 @@ export default {
         this.quizValidation = "";
       }
     },
+    checkShouldWrapper(value) {
+      this.shouldWrapper = value;
+    }
   },
 };
 </script>
@@ -138,6 +147,14 @@ export default {
     background: #42d392;
     color: #1a1a1a;
   }
+}
+.black-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba($color: #000000, $alpha: 0.8);
 }
 .quiz {
   display: flex;

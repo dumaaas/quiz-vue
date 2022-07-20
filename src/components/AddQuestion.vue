@@ -1,12 +1,12 @@
 <template>
   <div class="addQuestion">
     <div class="addQuestion-wrapper">
-      <button @click="newQuestionModal = true">Add question</button>
+      <button @click="newQuestionModal = true; $emit('checkShouldWrapper', true)">Add question</button>
     </div>
     <div class="addQuestion-modal" v-if="newQuestionModal">
       <div class="addQuestion-modal__header">
         <h3>Add new question</h3>
-        <span @click="newQuestionModal = false">X</span>
+        <span @click="newQuestionModal = false; $emit('checkShouldWrapper', false)">X</span>
       </div>
       <div class="addQuestion-modal__body">
         <div class="form-input">
