@@ -18,14 +18,14 @@
         <Timer :timer="timer" />
       </div>
 
-      <h2>{{ data[activeQuestion].question }}</h2>
+      <h2>{{ data.data[activeQuestion].question }}</h2>
       <p
         class="answers"
         :style="{
           cursor: disableQuestion ? 'not-allowed' : 'pointer',
           pointerEvents: disableQuestion ? 'none' : 'auto',
         }"
-        v-for="(answer, index) in data[activeQuestion].answers"
+        v-for="(answer, index) in data.data[activeQuestion].answers"
         :key="answer"
         @click="checkAnswer(index, answer, $event)"
       >
@@ -136,8 +136,10 @@ export default {
         this.usernameValidation = "Username can not be empty";
         return;
       }
-      console.log('heeej', localStorage.getItem('allowUsername'), 'daaj', this.newPlayerUsername)
-      if (this.checkIfUsernameExist() || (localStorage.getItem('allowUsername') == this.newPlayerUsername)) {
+      if (
+        this.checkIfUsernameExist() ||
+        localStorage.getItem("allowUsername") == this.newPlayerUsername
+      ) {
         this.isQuizActive = true;
         this.newPlayer = false;
         this.$emit("checkQuizActive", this.isQuizActive);
@@ -170,25 +172,25 @@ export default {
       var msg = "";
       switch (this.correctAnswers) {
         case 0:
-          msg = "Oh, you need to learn more! :(";
+          msg = this.newPlayerUsername+", oh, you need to learn more! :(";
           break;
         case 1:
-          msg = "Keep going!";
+          msg = this.newPlayerUsername+", keep going!";
           break;
         case 2:
-          msg = "You are almost there!";
+          msg = this.newPlayerUsername+", you are almost there!";
           break;
         case 3:
-          msg = "Great job, man!";
+          msg = this.newPlayerUsername+", great job, man!";
           break;
         default:
-          msg = "You are Vue.js master!";
+          msg = this.newPlayerUsername+", you are Vue.js master!";
           break;
       }
       return msg;
     },
     randomQuestion() {
-      var maxIndex = this.data.length;
+      var maxIndex = this.data.data.length;
       var questionIndex = Math.floor(Math.random() * maxIndex);
       return questionIndex;
     },
@@ -215,13 +217,13 @@ export default {
     nextQuestion() {
       if (this.answeredQuestion.length != 4) {
         this.answeredQuestion.push(this.activeQuestion);
-        if (this.activeQuestion == this.data.length - 1) {
+        if (this.activeQuestion == this.data.data.length - 1) {
           this.activeQuestion = 0;
         } else {
           this.activeQuestion++;
         }
         var answersClass = document.getElementsByClassName("answers");
-        this.data.forEach((el, index) => {
+        this.data.data.forEach((el, index) => {
           if (answersClass[index]) {
             answersClass[index].classList.remove("correct");
             answersClass[index].classList.remove("wrong");
@@ -259,7 +261,7 @@ export default {
       }
     },
     checkAnswer(index, answer, event) {
-      var correctAnswer = this.data[this.activeQuestion].correctAnswer;
+      var correctAnswer = this.data.data[this.activeQuestion].correctAnswer;
 
       if (answer === correctAnswer) {
         event.target.classList.add("correct");
@@ -268,7 +270,7 @@ export default {
         event.target.classList.add("wrong");
         this.wrongAnswers++;
         const answersClass = document.getElementsByClassName("answers");
-        var answers = this.data[this.activeQuestion].answers;
+        var answers = this.data.data[this.activeQuestion].answers;
         const index = answers.findIndex((answer) => answer === correctAnswer);
         answersClass[index].classList.add("correct");
       }

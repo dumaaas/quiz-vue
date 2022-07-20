@@ -11,7 +11,7 @@
         -- Select quiz --
       </option>
 
-      <option v-for="q in quizes" :key="q.name" :value="q.data">{{ q.name }}</option>
+      <option v-for="q in quizes" :key="q.title" :value="q">{{ q.title }}</option>
     </select>
     <p class="error" v-if="quizValidation">{{ quizValidation }}</p>
     <div class="quiz">
@@ -40,6 +40,7 @@ import AddQuestion from "./components/AddQuestion.vue";
 import highscore from "./json/highscore.json";
 import vueQuizData from "./helpers/quizData.js";
 import sportQuizData from "./helpers/sportQuizData.js";
+import generalQuizData from "./helpers/generalQuizData.js";
 import DayNightToggler from "./components/DayNightToggler.vue";
 import HighScoreTable from "./components/HighScoreTable.vue";
 
@@ -54,6 +55,7 @@ export default {
   data() {
     return {
       quizData: "disabled",
+      quizTitle: "",
       quizValidation: "",
       highscore: highscore,
       dayNight: true,
@@ -62,14 +64,16 @@ export default {
       showHighscore: false,
       newPlayerUsername: "",
       quizes: [
-        { name: "Vue Quiz", data: vueQuizData },
-        { name: "Sport Quiz", data: sportQuizData },
+        { title: vueQuizData.title, data: vueQuizData.data },
+        { title: sportQuizData.title, data: sportQuizData.data },
+        { title: generalQuizData.title, data: generalQuizData.data }
       ],
     };
   },
   watch: {
-    quizData() {
+    quizData(newVal) {
       this.quizValidation = "";
+      this.quizTitle = newVal.title;
     }
   },
   methods: {
@@ -78,12 +82,12 @@ export default {
         return "New player";
       }
       if (this.isQuizActive) {
-        return "Vue Quiz";
+        return this.quizTitle;
       }
       return "Result";
     },
     addQuestionToData(value) {
-      this.quizData.push(value);
+      this.quizData.data.push(value);
     },
     dayNightToggler(value) {
       this.dayNight = value;
@@ -143,7 +147,7 @@ export default {
   border: 1px solid #42d392;
   border-radius: 0 50px 0 50px;
   padding: 50px;
-  margin-top: 40px;
+  margin: 40px 20px 40px 20px;
 }
 .dayMode {
   .quiz {
@@ -177,6 +181,7 @@ h1 {
   font-size: 60px;
   line-height: 60px;
   margin-bottom: 0;
+  margin-top: 0;
 }
 select {
   /* styling */
