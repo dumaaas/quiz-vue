@@ -28,9 +28,7 @@
           <td>
             {{ u.wrong }}
           </td>
-          <td>
-            {{ u.time }} s
-          </td>
+          <td>{{ u.time }} s</td>
         </tr>
       </tbody>
     </table>
@@ -92,6 +90,16 @@ export default {
 }
 .dayMode {
   .highscore {
+    &__header {
+      color: #42d392;
+      border-bottom: 1px solid #42d392;
+
+      span {
+        &:hover {
+          color: rgba(66, 211, 146, 0.4);
+        }
+      }
+    }
     h1 {
       color: #42d392;
     }

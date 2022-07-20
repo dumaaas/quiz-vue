@@ -38,7 +38,7 @@
         class="nextBtn"
         @click="nextQuestion()"
       >
-        Sledece pitanje
+        Next question
       </button>
     </div>
     <div v-else>
@@ -71,7 +71,7 @@
           New game
         </button>
         <button class="nextBtn" @click="anotherGame(false, true)">
-          Change username
+          Change username/quiz
         </button>
       </div>
     </div>
@@ -86,7 +86,7 @@ import highscore from "./../json/highscore.json";
 export default {
   name: "Questions",
   props: {
-    data: Array,
+    data: [],
   },
   components: {
     QuestionCounter,
@@ -128,11 +128,16 @@ export default {
 
   methods: {
     startQuiz() {
+      if (this.data === "disabled") {
+        this.$emit("checkQuizValidation", true);
+        return;
+      }
       if (!this.newPlayerUsername) {
         this.usernameValidation = "Username can not be empty";
         return;
       }
-      if (this.checkIfUsernameExist()) {
+      console.log('heeej', localStorage.getItem('allowUsername'), 'daaj', this.newPlayerUsername)
+      if (this.checkIfUsernameExist() || (localStorage.getItem('allowUsername') == this.newPlayerUsername)) {
         this.isQuizActive = true;
         this.newPlayer = false;
         this.$emit("checkQuizActive", this.isQuizActive);
@@ -203,6 +208,9 @@ export default {
       this.$emit("checkQuizActive", this.isQuizActive);
       this.newPlayer = shouldNewPlayer;
       this.$emit("checkNewPlayer", this.newPlayer);
+      if (!this.isQuizActive) {
+        localStorage.setItem("allowUsername", this.newPlayerUsername);
+      }
     },
     nextQuestion() {
       if (this.answeredQuestion.length != 4) {

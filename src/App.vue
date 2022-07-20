@@ -7,10 +7,13 @@
       v-model="quizData"
       placeholder="Odaberite opciju"
     >
-      <option value="" disabled selected hidden>--Select quiz--</option>
+      <option value="disabled" disabled selected hidden>
+        -- Select quiz --
+      </option>
 
-      <option v-for="q in quizes" :key="q" :value="q.data">{{q.name}}</option>
+      <option v-for="q in quizes" :key="q.name" :value="q.data">{{ q.name }}</option>
     </select>
+    <p class="error" v-if="quizValidation">{{ quizValidation }}</p>
     <div class="quiz">
       <Questions
         :data="quizData"
@@ -18,6 +21,7 @@
         @checkShowHighscore="checkShowHighscore"
         @checkNewPlayer="checkNewPlayer"
         @checkNewPlayerUsername="checkNewPlayerUsername"
+        @checkQuizValidation="checkQuizValidation"
       />
       <AddQuestion @addQuestion="addQuestionToData" />
       <DayNightToggler @dayNightToggler="dayNightToggler" />
@@ -49,15 +53,24 @@ export default {
   },
   data() {
     return {
-      quizData: null,
+      quizData: "disabled",
+      quizValidation: "",
       highscore: highscore,
       dayNight: true,
       isNewPlayer: true,
       isQuizActive: true,
       showHighscore: false,
       newPlayerUsername: "",
-      quizes: [{name: 'Vue Quiz', data: vueQuizData}, {name: 'Sport Quiz', data: sportQuizData}]
+      quizes: [
+        { name: "Vue Quiz", data: vueQuizData },
+        { name: "Sport Quiz", data: sportQuizData },
+      ],
     };
+  },
+  watch: {
+    quizData() {
+      this.quizValidation = "";
+    }
   },
   methods: {
     checkTitle() {
@@ -70,7 +83,7 @@ export default {
       return "Result";
     },
     addQuestionToData(value) {
-      this.data.push(value);
+      this.quizData.push(value);
     },
     dayNightToggler(value) {
       this.dayNight = value;
@@ -90,6 +103,13 @@ export default {
     },
     checkNewPlayerUsername(value) {
       this.newPlayerUsername = value;
+    },
+    checkQuizValidation(value) {
+      if (value) {
+        this.quizValidation = "You must select one of the quizes!";
+      } else {
+        this.quizValidation = "";
+      }
     },
   },
 };
@@ -123,6 +143,7 @@ export default {
   border: 1px solid #42d392;
   border-radius: 0 50px 0 50px;
   padding: 50px;
+  margin-top: 40px;
 }
 .dayMode {
   .quiz {
@@ -155,6 +176,7 @@ h1 {
   color: #42d392;
   font-size: 60px;
   line-height: 60px;
+  margin-bottom: 0;
 }
 select {
   /* styling */
@@ -166,10 +188,9 @@ select {
   line-height: 1.5em;
   color: #42d392;
   padding: 0.5em 3.5em 0.5em 1em;
-  margin-bottom: 20px !important;
   /* reset */
 
-  margin: 0;
+  margin: 40px 0 0 0;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -203,5 +224,14 @@ select.classic:focus {
 select:-moz-focusring {
   color: transparent;
   text-shadow: 0 0 0 #000;
+}
+
+.error {
+  margin-top: 4px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  color: #ca0b00;
 }
 </style>

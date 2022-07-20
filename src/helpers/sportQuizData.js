@@ -1,26 +1,26 @@
 var sportQuizData = [{
-    question: "Klececi sam zagrlio ortal?",
+    question: "Which club has won the most Champions League titles?",
     answers: [
-      "Tacan odgovor",
-      "Netacan odgovor",
-      "Bas netacan odgovor",
+      "Real Madrid",
+      "Barcelona",
+      "Manchester United",
     ],
-    correctAnswer: "Bas netacan odgovor",
+    correctAnswer: "Real Madrid",
   },
   {
-    question: "If you use .passive and .prevent together, .prevent will be ignored. Probably, it will show you a warning.",
-    answers: ["True", "False"],
-    correctAnswer: "True",
+    question: "Who is the only player to win the Champions League with three different clubs?",
+    answers: ["Clarence Seedorf", "Cristiano Ronaldo"],
+    correctAnswer: "Clarence Seedorf",
   },
   {
-    question: "Which of the directives below provide a two-way binding?",
-    answers: ["v-inline", "v-model", "v-on"],
-    correctAnswer: "v-model",
+    question: "Denmark notably won Euro 92, despite the fact that they did not initially qualify. Which team did they replace?",
+    answers: ["Belgium", "Yugoslavia", "Hungary"],
+    correctAnswer: "Yugoslavia",
   },
   {
-    question: "Which of the following directives is to used for attaching event listeners that invoke methods?",
-    answers: ["v-for", "v-on", "v-model", "v-bind"],
-    correctAnswer: "v-on",
+    question: "In which year did the European Championship expand from 16 teams to 24 teams?",
+    answers: ["2012", "1996", "2016", "2004"],
+    correctAnswer: "2016",
   },
 ]
 
