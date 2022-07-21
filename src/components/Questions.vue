@@ -142,10 +142,7 @@ export default {
         this.usernameValidation = "Username can not be empty";
         return;
       }
-      if (
-        this.checkIfUsernameExist() ||
-        localStorage.getItem("allowUsername") == this.newPlayerUsername
-      ) {
+      if (this.checkIfUsernameExist() || this.checkIfUsernamePlayedQuiz()) {
         this.isQuizActive = true;
         this.newPlayer = false;
         this.$emit("checkQuizActive", this.isQuizActive);
@@ -167,6 +164,18 @@ export default {
       );
       if (tryFind) {
         return false;
+      }
+      return true;
+    },
+    checkIfUsernamePlayedQuiz() {
+      let tryFindUser = this.highscore.find(
+        (username) => username.name === this.newPlayerUsername
+      );
+      if (tryFindUser) {
+        let tryFindQuizForUser = tryFindUser.quizesDone.find(
+          (quiz) => quiz.title === this.data.title
+        );
+        if (tryFindQuizForUser) return false;
       }
       return true;
     },
@@ -216,9 +225,6 @@ export default {
       this.$emit("checkQuizActive", this.isQuizActive);
       this.newPlayer = shouldNewPlayer;
       this.$emit("checkNewPlayer", this.newPlayer);
-      if (!this.isQuizActive) {
-        localStorage.setItem("allowUsername", this.newPlayerUsername);
-      }
     },
     nextQuestion() {
       if (this.answeredQuestion.length != 4) {
@@ -241,23 +247,43 @@ export default {
         // add user to highscore
         let newPlayerObj = {
           name: this.newPlayerUsername,
-          correct: this.correctAnswers,
-          wrong: this.wrongAnswers,
-          time: this.timeUsed,
+          quizesDone: [
+            {
+              title: this.data.title,
+              correct: this.correctAnswers,
+              wrong: this.wrongAnswers,
+              time: this.timeUsed,
+            },
+          ],
         };
 
         var doesPlayerExist = this.highscore.findIndex(
           (player) => player.name == newPlayerObj.name
         );
 
+        if (doesPlayerExist != -1) {
+          var doesQuizExist = this.highscore[
+            doesPlayerExist
+          ].quizesDone.findIndex((el) => el.title == this.data.title);
+        }
         if (doesPlayerExist == -1) {
           this.highscore.push(newPlayerObj);
         } else if (
-          this.highscore[doesPlayerExist].correct <= newPlayerObj.correct ||
-          (this.highscore[doesPlayerExist].correct <= newPlayerObj.correct &&
-            this.highscore[doesPlayerExist].time >= newPlayerObj.time)
+          doesQuizExist != -1 &&
+          (this.highscore[doesPlayerExist].quizesDone[doesQuizExist].correct <=
+            newPlayerObj.quizesDone[0].correct ||
+            (this.highscore[doesPlayerExist].quizesDone[doesQuizExist]
+              .correct <= newPlayerObj.quizesDone[0].correct &&
+              this.highscore[doesPlayerExist].quizesDone[doesQuizExist].time >=
+                newPlayerObj.quizesDone[0].time))
         ) {
-          this.highscore[doesPlayerExist] = newPlayerObj;
+          this.highscore[doesPlayerExist].quizesDone[doesQuizExist] =
+            newPlayerObj.quizesDone[0];
+        } else {
+          console.log("ajdeee bree");
+          this.highscore[doesPlayerExist].quizesDone.push(
+            newPlayerObj.quizesDone[0]
+          );
         }
 
         // set quiz state unactive

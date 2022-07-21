@@ -32,6 +32,8 @@
       <HighScoreTable
         :highscore="highscore"
         :showHighscore="showHighscore"
+        :quizes="quizes"
+        :quizTitle="quizTitle"
         @checkShowHighscore="checkShowHighscore" :wrapper="shouldWrapper"
         @checkShouldWrapper="checkShouldWrapper"
       />

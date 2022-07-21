@@ -2,8 +2,23 @@
   <div class="highscore" v-if="showHighscore">
     <div class="highscore__header">
       <h3>Highscore</h3>
-      <span @click="$emit('checkShowHighscore', false); $emit('checkShouldWrapper', false)">X</span>
+      <span
+        @click="
+          $emit('checkShowHighscore', false);
+          $emit('checkShouldWrapper', false);
+        "
+        >X</span
+      >
     </div>
+    <select class="classic" v-model="quiz" placeholder="Odaberite opciju">
+      <option value="disabled" disabled selected hidden>
+        -- Select quiz --
+      </option>
+
+      <option v-for="q in quizes" :key="q.title" :value="q.title">
+        {{ q.title }}
+      </option>
+    </select>
     <table>
       <thead>
         <tr>
@@ -15,7 +30,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(u, index) in highscore" :key="index">
+        <tr v-for="(u, index) in choosenHighscore()" :key="index">
           <td>
             {{ index + 1 }}
           </td>
@@ -23,12 +38,12 @@
             {{ u.name }}
           </td>
           <td>
-            {{ u.correct }}
+            {{ u.data.correct }}
           </td>
           <td>
-            {{ u.wrong }}
+            {{ u.data.wrong }}
           </td>
-          <td>{{ u.time }} s</td>
+          <td>{{ u.data.time }} s</td>
         </tr>
       </tbody>
     </table>
@@ -40,6 +55,37 @@ export default {
   props: {
     highscore: Array,
     showHighscore: Boolean,
+    quizes: Array,
+    quizTitle: String,
+  },
+  data() {
+    return {
+      quiz: "disabled",
+      isEmptyHighscore: true,
+    };
+  },
+  watch: {
+    quizTitle(newVal) {
+      this.quiz = newVal
+    }
+  },
+  methods: {
+    choosenHighscore() {
+      var choosenHighscore = [];
+      this.highscore.forEach((el) => {
+        let obj = el.quizesDone.find((o) => o.title === this.quiz);
+        let newObj = {
+          name: el.name,
+          data: obj,
+        };
+        if (obj) choosenHighscore.push(newObj);
+      });
+      choosenHighscore.sort(
+        (a, b) => b.data.correct - a.data.correct || a.data.time - b.data.time
+      );
+
+      return choosenHighscore;
+    },
   },
 };
 </script>
@@ -74,7 +120,8 @@ export default {
   border-radius: 25px 0 25px 0;
   table {
     margin: 32px 0 16px 0;
-    width: 600px;
+    min-width: 600px;
+    width: 100%;
     border-collapse: collapse;
 
     th {
